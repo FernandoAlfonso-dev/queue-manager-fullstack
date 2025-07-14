@@ -1,0 +1,21 @@
+version: "3.8"
+
+services:
+  backend:
+    container_name: "back-queue-manager-cnt"
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: "back-queue-manager-img:1.0.0"
+    ports: 
+      - "4001:4000"
+
+  frontend:
+    container_name: "fron-queue-manager-cnt"
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    image: "front-queue-manager-img:1.0.0"
+    ports: 
+      - "3001:3000"
+    
