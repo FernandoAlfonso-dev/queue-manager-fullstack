@@ -12,3 +12,32 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+
+model Module {
+  id         Int          @id @default(autoincrement())
+  name       String?
+  createAt   DateTime     @default(now())
+  updateAt   DateTime     @updatedAt
+  TurnModule TurnModule[]
+}
+
+model Turn {
+  id         Int          @id @default(autoincrement())
+  turn       String
+  createAt   DateTime     @default(now())
+  updateAt   DateTime     @updatedAt
+  TurnModule TurnModule[]
+}
+
+model TurnModule {
+  id Int @id @default(autoincrement())
+
+  TurnId Int
+  Turn   Turn @relation(fields: [TurnId], references: [id])
+
+  ModuleId Int
+  Module   Module @relation(fields: [ModuleId], references: [id])
+
+  createAt DateTime @default(now())
+  updateAt DateTime @updatedAt
+}
