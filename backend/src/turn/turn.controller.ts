@@ -1,15 +1,15 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Param, Delete, HttpCode } from '@nestjs/common';
 import { TurnService } from './turn.service';
-import { CreateTurnDto } from './dto/create-turn.dto';
-import { UpdateTurnDto } from './dto/update-turn.dto';
+import { IdStringDto } from 'src/common/dto/id.dto';
+import { NumberOrStringPipe } from 'src/common/pipe/numberOrString.pipe';
 
 @Controller('turn')
 export class TurnController {
-  constructor(private readonly turnService: TurnService) {}
+  constructor(private readonly turnService: TurnService) { }
 
   @Post()
-  create(@Body() createTurnDto: CreateTurnDto) {
-    return this.turnService.create(createTurnDto);
+  create() {
+    return this.turnService.create();
   }
 
   @Get()
@@ -18,17 +18,20 @@ export class TurnController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.turnService.findOne(+id);
+  findOne(@Param('id', new NumberOrStringPipe()) id: string | number) {
+    console.log(typeof id)
+    return this.turnService.findOne(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTurnDto: UpdateTurnDto) {
-    return this.turnService.update(+id, updateTurnDto);
+  @Delete('/reset')
+  @HttpCode(204)
+  removeAll() {
+    return this.turnService.removeAll();
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.turnService.remove(+id);
+  @HttpCode(204)
+  remove(@Param('id', new NumberOrStringPipe()) id: string | number) {
+    return this.turnService.remove(id);
   }
 }

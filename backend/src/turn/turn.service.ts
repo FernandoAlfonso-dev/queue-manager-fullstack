@@ -1,26 +1,62 @@
 import { Injectable } from '@nestjs/common';
-import { CreateTurnDto } from './dto/create-turn.dto';
-import { UpdateTurnDto } from './dto/update-turn.dto';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { findOrThrow } from 'src/common/util/findOrThrow.util';
+import { Turn } from '@prisma/client';
 
 @Injectable()
 export class TurnService {
-  create(createTurnDto: CreateTurnDto) {
-    return 'This action adds a new turn';
+
+  constructor(readonly prisma: PrismaService) { }
+
+  private findOrThrowTurn({
+    id,
+    message
+  }: { id: number | string, message?: string }): Promise<Turn> {
+
+    const message_not_found = `Not found by id - ${id} -`;
+    const key = typeof id === 'number' ? 'id' : 'turn';
+
+    return findOrThrow<Turn>({
+      finder: () => this.prisma.turn.findFirst({
+        where: { [key]: id }
+      }),
+      message: message || message_not_found
+    })
+  }
+
+  async create() {
+    const count = await this.prisma.turn.count();
+    const payload = {
+      turn: `TRN-${count + 1}`
+    }
+
+    return this.prisma.turn.create({
+      data: payload
+    })
   }
 
   findAll() {
-    return `This action returns all turn`;
+    return this.prisma.turn.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} turn`;
+  findOne(id: number | string) {
+    return this.findOrThrowTurn({
+      id
+    });
   }
 
-  update(id: number, updateTurnDto: UpdateTurnDto) {
-    return `This action updates a #${id} turn`;
+  async remove(id: number | string) {
+
+    const turn_found = await this.findOrThrowTurn({
+      id
+    });
+
+    return this.prisma.turn.delete({
+      where: { id: turn_found.id }
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} turn`;
+  removeAll() {
+    return this.prisma.turn.deleteMany()
   }
 }
