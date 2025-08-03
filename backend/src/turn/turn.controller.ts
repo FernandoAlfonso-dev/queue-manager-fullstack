@@ -19,7 +19,6 @@ export class TurnController {
 
   @Get(':id')
   findOne(@Param('id', new NumberOrStringPipe()) id: string | number) {
-    console.log(typeof id)
     return this.turnService.findOne(id);
   }
 
