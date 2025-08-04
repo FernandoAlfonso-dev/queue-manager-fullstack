@@ -24,6 +24,12 @@ services:
       - "database"
     environment:
       DATABASE_URL: ${DATABASE_URL}
+    healthcheck:
+      test: ["CMD","curl","-f","http://localhost:4000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: always
 
   frontend:
     container_name: "fron-queue-manager-cnt"
@@ -34,7 +40,8 @@ services:
     ports: 
       - "3001:3000"
     depends_on:
-      - "database"
+      - "backend"
+    restart: always
 
 volumes:
   mysql_data:

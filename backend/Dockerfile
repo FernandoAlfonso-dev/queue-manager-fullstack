@@ -8,8 +8,12 @@ RUN npm ci
 
 COPY . .
 
+RUN npx prisma generate
+
 RUN npm run build
 
 EXPOSE 4001
 
-CMD [ "npm", "run", "start:prod" ]
+CMD [ "npm", "run", "start:docker" ]
+
+
