@@ -45,7 +45,7 @@ export class TurnService {
     });
   }
 
-  async remove(id: number | string) {
+  async remove(id: number) {
 
     const turn_found = await this.findOrThrowTurn({
       id
