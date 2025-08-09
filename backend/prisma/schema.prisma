@@ -24,6 +24,7 @@ model Module {
 model Turn {
   id         Int          @id @default(autoincrement())
   turn       String
+  used       Boolean      @default(false)
   createAt   DateTime     @default(now())
   updateAt   DateTime     @updatedAt
   TurnModule TurnModule[]
@@ -32,11 +33,11 @@ model Turn {
 model TurnModule {
   id Int @id @default(autoincrement())
 
-  TurnId Int
-  Turn   Turn @relation(fields: [TurnId], references: [id])
+  turnId Int
+  turn   Turn @relation(fields: [turnId], references: [id])
 
-  ModuleId Int
-  Module   Module @relation(fields: [ModuleId], references: [id])
+  moduleId Int
+  module   Module @relation(fields: [moduleId], references: [id], onDelete: Cascade)
 
   createAt DateTime @default(now())
   updateAt DateTime @updatedAt
